@@ -69,13 +69,14 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'websocket.wsgi.application'
+WSGI_APPLICATION = 'websocket.wsgi.application'
 ASGI_APPLICATION = 'websocket.routing.application'
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [('localhost', 6379)],
         },
     },
 }
