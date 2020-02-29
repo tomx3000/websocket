@@ -11,6 +11,7 @@ class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self,data):
         messages = Message.last_20_messages()
         content={
+        "command":"messages",
         "messages":self.messages_to_json(messages)
         }
         # why will this work if sending is done without any group channel reference
@@ -33,7 +34,7 @@ class ChatConsumer(WebsocketConsumer):
     def new_message(self,data):
         author = data["from"]#username
         author_user = User.objects.filter(username=author)[0]
-        message = Message,objects.create(
+        message = Message.objects.create(
             author=author_user,
             content=data["message"]
             )
@@ -77,8 +78,6 @@ class ChatConsumer(WebsocketConsumer):
 
 
     def send_chat_message(self,message):
-        # message = text_data_json['message']
-
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -96,6 +95,7 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from room group
     def chat_message(self, event):
         message = event['message']
+        print("sending new message ")
 
         # Send message to WebSocket
         self.send(text_data=json.dumps( message))
